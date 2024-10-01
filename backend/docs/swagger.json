@@ -33,15 +33,19 @@
                                             "Witcher 3",
                                             "Cyberpunk 2077"
                                         ]
+                                    },
+                                    "None": {
+                                        "value": []
+                                    }
                                 }
-
                             }
-                        }
+                        },
+                        "description": "Success"
                     }
-                }
+                },
+                "summary": "Get all game names"
             }
         }
     }
-}
 }
    
