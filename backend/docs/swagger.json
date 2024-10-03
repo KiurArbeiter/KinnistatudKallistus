@@ -11,11 +11,11 @@
    
     },
     "paths": {
-        "/games": {
-            "summary": "Games Object",
+        "/hugs": {
+            "summary": "Hugs Object",
             "get": {
                 "tags": [
-                    "GAMES"
+                    "HUGS"
                 ],
                 "responses": {
                     "200": {
@@ -28,10 +28,10 @@
                                     }
                                 },
                                 "examples": {
-                                    "Games": {
+                                    "Hugs": {
                                         "value": [
-                                            "Witcher 3",
-                                            "Cyberpunk 2077"
+                                            "Short",
+                                            "Long"
                                         ]
                                     },
                                     "None": {
@@ -43,7 +43,7 @@
                         "description": "Success"
                     }
                 },
-                "summary": "Get all game names"
+                "summary": "Get all hug types"
             }
         }
     }
