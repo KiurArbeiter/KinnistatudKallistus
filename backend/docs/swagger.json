@@ -31,7 +31,8 @@
                                     "Hugs": {
                                         "value": [
                                             "Short",
-                                            "Long"
+                                            "Long",
+                                            "Medium"
                                         ]
                                     },
                                     "None": {
