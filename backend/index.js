@@ -17,12 +17,42 @@ app.get("/", (req, res) => {
 })
 
 app.get("/hugs", (req, res) => {
-    res.send(hugs.map((h) => h.name))
+    res.send(hugs.map(({id,name}) => {
+         return {id, name}
+    }))
+})
+
+function createID() {
+    const max = hugs.reduce((prev, current) => (prev.id > current.id) ? prev : current, 1)
+    return max + 1;
+}
+
+
+app.post("/hugs", (req, res) => {
+    if(!req.body.name || req.body.name.trim().lenght === 0) {
+        return res.status(400).send({error: "Missing required field 'name'"})
+    }
+    const newPrice = parseFloat(req.body.price);
+    hugs.push({
+            id: createId(),
+            name: req.body.name,
+            price: isNaN(newPrice) ? null : newPrice
+        }
+    )
+    res.send(hugs)
 })
 
 
 app.get("/hugs/:id", (req, res) => {
-    res.send(hugs[req.params.id])
+    const idNumber = parseInt(req.params.id)
+    if (isNaN(idNumber)) {
+        return res.status(400).send({error: `ID must be a whole number: ${req.params.id}`})
+    }
+    const hug = hugs.find(g => g.id === idNumber)
+    if (!hug) {
+        return res.status(404).send({error: `Hug Not Found!`})
+    }
+    res.send(hug)
 })
 
 
