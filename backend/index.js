@@ -1,9 +1,13 @@
-const app = require('express')()
-const host = 'localhost'
 const port = 8080
+const host = 'localhost'
+const express = require("express")
+const app = express()
 const swaggerDoc = require("./docs/swagger.json")
 const swaggerUi = require("swagger-ui-express")
 
+
+
+app.use(express.json())
 const hugs = [
     {id: 1, name: "Short", price: 20.50},
     {id: 2, name: "Medium", price: 50.20},
@@ -22,9 +26,34 @@ app.get("/hugs", (req, res) => {
     }))
 })
 
+app.get("/hugs/:id", (req, res) => {
+    const hug = getHug(req, res)
+    if (!hug) { return }
+    return res.send(hug)
+})
+
+app.delete("/hugs/:id", (req, res) => {
+    const hug = getHug(req, res)
+    if (!hug) { return }
+    hugs.splice(hugs.indexOf(hug), 1)
+    res.status(204).send()
+})
+
+
+app.put("/hugs/:id", (req, res) => {
+    const hug = getHug(req, res)
+    if (!hug) { return }
+    
+})
+
+
 function createId() {
-    const max = hugs.reduce((prev, current) => (prev.id > current.id) ? prev : current, 1)
-    return max + 1;
+    const maxIdHug = hugs.reduce((prev, current) => (prev.id > current.id) ? prev : current, 1)
+    return maxIdHug + 1;
+}
+
+function getBaseUrl(req) {
+    return (req.connection && req.connection.encrypted ? 'https' : 'http') + `://${req.headers.host}`
 }
 
 
@@ -33,26 +62,15 @@ app.post("/hugs", (req, res) => {
         return res.status(400).send({error: "Missing required field 'name'"})
     }
     const newPrice = parseFloat(req.body.price);
-    hugs.push({
+    const newHug = {
             id: createId(),
             name: req.body.name,
             price: isNaN(newPrice) ? null : newPrice
         }
-    )
-    res.send(hugs)
-})
-
-
-app.get("/hugs/:id", (req, res) => {
-    const idNumber = parseInt(req.params.id)
-    if (isNaN(idNumber)) {
-        return res.status(400).send({error: `ID must be a whole number: ${req.params.id}`})
-    }
-    const hug = hugs.find(g => g.id === idNumber)
-    if (!hug) {
-        return res.status(404).send({error: `Hug Not Found!`})
-    }
-    res.send(hug)
+    hugs.push(newHug)
+    res.status(201)
+    .location(`${getBaseUrl(req)}/hugs/${newHug.id}`)
+    .send(newHug)
 })
 
 
@@ -60,3 +78,17 @@ app.get("/hugs/:id", (req, res) => {
 app.listen(port, () => {
     console.log(`API up at : http:/localhost:${port}`)
 })
+
+function getHug(req, res) {
+    const idNumber = parseInt(req.params.id)
+    if (isNaN(idNumber)) {
+        res.status(400).send({error: `ID must be whole number ${req.params.id}`})
+        return null
+    }
+    const hug = hugs.find(g => g.id === idNumber)
+    if (!hug) {
+        res.status(404).send({error: `Hug Not Found!`})
+        return null
+    }
+    return hug
+}
