@@ -1,4 +1,5 @@
-const port = 8080
+require('dotenv').config();
+const port = process.envPORT || 3001;
 const host = 'localhost'
 const express = require("express")
 const app = express()
@@ -76,6 +77,7 @@ app.post("/hugs", (req, res) => {
 
 
 app.listen(port, () => {
+    require("./db")
     console.log(`API up at : http:/localhost:${port}`)
 })
 
