@@ -23,8 +23,8 @@ app.get("/hugs", (req, res) => {
 })
 
 function createId() {
-    const max = hugs.reduce((prev, current) => (prev.id > current.id) ? prev : current, 1)
-    return max + 1;
+    const maxIdHug = hugs.reduce((prev, current) => (prev.id > current.id) ? prev : current, 1)
+    return maxIdHug.id + 1;
 }
 
 
