@@ -1,266 +1,164 @@
 {
-    "openapi": "3.0.2",
+    "swagger": "2.0",
     "info": {
-        "version": "1.0",
-        "title": "KinnistatudKallistus",
-        "description": "### This is a Swagger UI for the Hugs API\n\n### Error handling\nErrors are presented using the HTTP status codes 400-599. The response includes a more detailed explanation about the error in the body.\n\n```\n{\n  \"error\": \"Cleartext explanation of the error that occurred\"\n}\n```\n\n### Generic API errors\nThese error responses can be returned by any of the described endpoints.\n\n| HTTP status  |  Description |\n|---|---|\n| 400| Bad input parameters or invalid request. More information can be found in the response body.\n| 401| The consumer does not have access to the requested resource or the provided token is not valid.\n| 404| The requested resource can not be found or the user does not have access to the resource.\n| 5XX| A server error has occurred while processing the request."
+      "version": "1.0.0",
+      "title": "Hug API",
+      "description": "API for managing hugs"
     },
+    "host": "localhost:3001",
+    "basePath": "/",
+    "schemes": ["http"],
     "paths": {
-        "/hugs": {
-            "summary": "Hugs Object",
-            "get": {
-                "tags": [
-                    "HUGS"
-                ],
-                "summary": "Get all hug types",
-                "responses": {
-                    "200": {
-                        "description": "A list of hug types",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer",
-                                                "description": "ID of the hug"
-                                            },
-                                            "name": {
-                                                "type": "string",
-                                                "description": "Name of the hug"
-                                            }
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "Hugs": {
-                                        "value": [
-                                            { "id": 1, "name": "Short" },
-                                            { "id": 2, "name": "Medium" },
-                                            { "id": 3, "name": "Long" }
-                                        ]
-                                    },
-                                    "None": {
-                                        "value": []
-                                    }
-                                }
-                            }
-                        }
-                    }
+      "/hugs": {
+        "get": {
+          "summary": "Get all hugs",
+          "responses": {
+            "200": {
+              "description": "A list of hugs",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Hug"
                 }
-            },
-            "post": {
-                "tags": [
-                    "HUGS"
-                ],
-                "summary": "Add a new hug type",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "description": "The name of the hug type"
-                                    },
-                                    "price": {
-                                        "type": "number",
-                                        "description": "The price of the hug"
-                                    }
-                                },
-                                "required": ["name"]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Hug type created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "description": "ID of the newly created hug"
-                                        },
-                                        "name": {
-                                            "type": "string",
-                                            "description": "The name of the newly created hug"
-                                        },
-                                        "price": {
-                                            "type": "number",
-                                            "description": "The price of the newly created hug"
-                                        }
-                                    }
-                                },
-                                "example": {
-                                    "id": 4,
-                                    "name": "Super Long",
-                                    "price": 100.00
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Missing required field 'name'."
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+              }
             }
+          }
         },
-        "/hugs/{id}": {
-            "get": {
-                "tags": [
-                    "HUGS"
-                ],
-                "summary": "Get a hug by ID",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "ID of the hug to retrieve"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Hug found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "description": "ID of the hug"
-                                        },
-                                        "name": {
-                                            "type": "string",
-                                            "description": "Name of the hug"
-                                        },
-                                        "price": {
-                                            "type": "number",
-                                            "description": "Price of the hug"
-                                        }
-                                    }
-                                },
-                                "example": {
-                                    "id": 2,
-                                    "name": "Medium",
-                                    "price": 50.20
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid ID format",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "ID must be a whole number: abc"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Hug not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Hug Not Found!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "HUGS"
-                ],
-                "summary": "Delete a hug by ID",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "ID of the hug to delete"
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Hug deleted successfully"
-                    },
-                    "400": {
-                        "description": "Invalid ID format",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "ID must be a whole number: abc"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Hug not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Hug Not Found!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+        "post": {
+          "summary": "Create a hug",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "hug",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/HugInput"
+              }
             }
+          ],
+          "responses": {
+            "201": {
+              "description": "Hug created",
+              "schema": {
+                "$ref": "#/definitions/Hug"
+              }
+            },
+            "400": {
+              "description": "Missing required field 'name'"
+            }
+          }
         }
+      },
+      "/hugs/{id}": {
+        "get": {
+          "summary": "Get a hug by ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "integer"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Hug found",
+              "schema": {
+                "$ref": "#/definitions/Hug"
+              }
+            },
+            "400": {
+              "description": "Invalid ID supplied"
+            },
+            "404": {
+              "description": "Hug not found"
+            }
+          }
+        },
+        "put": {
+          "summary": "Update a hug by ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "in": "body",
+              "name": "hug",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/HugInput"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Hug updated",
+              "schema": {
+                "$ref": "#/definitions/Hug"
+              }
+            },
+            "400": {
+              "description": "Missing required field 'name'"
+            },
+            "404": {
+              "description": "Hug not found"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete a hug by ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "integer"
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Hug deleted"
+            },
+            "400": {
+              "description": "Invalid ID supplied"
+            },
+            "404": {
+              "description": "Hug not found"
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "Hug": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          }
+        }
+      },
+      "HugInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          }
+        },
+        "required": ["name"]
+      }
     }
-}
+  }
+  

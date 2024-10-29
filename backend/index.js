@@ -42,10 +42,20 @@ app.delete("/hugs/:id", (req, res) => {
 
 
 app.put("/hugs/:id", (req, res) => {
-    const hug = getHug(req, res)
-    if (!hug) { return }
+    const hug = getHug(req, res);
+    if (!hug) { return; }
+    if (!req.body.name || req.body.name.trim().length === 0) {
+        return res.status(400).send({ error: "Missing required field 'name'" });
+    }
+    hug.name = req.body.name;
     
-})
+    if (req.body.price) {
+        const newPrice = parseFloat(req.body.price);
+        hug.price = isNaN(newPrice) ? null : newPrice;
+    }
+    
+    res.send(hug);
+});
 
 
 function createId() {
@@ -94,3 +104,4 @@ function getHug(req, res) {
     }
     return hug
 }
+
