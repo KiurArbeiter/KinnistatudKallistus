@@ -1,164 +1,351 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "version": "1.0.0",
+  "info": {
       "title": "Hug API",
+      "version": "1.0.0",
       "description": "API for managing hugs"
-    },
-    "host": "localhost:3001",
-    "basePath": "/",
-    "schemes": ["http"],
-    "paths": {
+  },
+  "paths": {
       "/hugs": {
-        "get": {
-          "summary": "Get all hugs",
-          "responses": {
-            "200": {
-              "description": "A list of hugs",
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/Hug"
-                }
-              }
-            }
+          "get": {
+              "tags": [
+                  "Hug"
+              ],
+              "responses": {
+                  "200": {
+                      "description": "A list of hugs",
+                      "schema": {
+                          "type": "array",
+                          "items": {
+                              "$ref": "#/definitions/Hug"
+                          }
+                      }
+                  }
+              },
+              "summary": "Get all hugs",
+              "tag": [
+                  "Hugs"
+              ]
+          },
+          "post": {
+              "tags": [
+                  "Hug"
+              ],
+              "parameters": [
+                  {
+                      "name": "hug",
+                      "schema": {
+                          "$ref": "#/definitions/HugInput"
+                      },
+                      "in": "body",
+                      "required": true
+                  }
+              ],
+              "responses": {
+                  "201": {
+                      "description": "Hug created",
+                      "schema": {
+                          "$ref": "#/definitions/Hug"
+                      }
+                  },
+                  "400": {
+                      "description": "Missing required field 'name'"
+                  }
+              },
+              "summary": "Create a hug"
           }
-        },
-        "post": {
-          "summary": "Create a hug",
-          "parameters": [
-            {
-              "in": "body",
-              "name": "hug",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/HugInput"
-              }
-            }
-          ],
-          "responses": {
-            "201": {
-              "description": "Hug created",
-              "schema": {
-                "$ref": "#/definitions/Hug"
-              }
-            },
-            "400": {
-              "description": "Missing required field 'name'"
-            }
-          }
-        }
       },
       "/hugs/{id}": {
-        "get": {
-          "summary": "Get a hug by ID",
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "required": true,
-              "type": "integer"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Hug found",
-              "schema": {
-                "$ref": "#/definitions/Hug"
-              }
-            },
-            "400": {
-              "description": "Invalid ID supplied"
-            },
-            "404": {
-              "description": "Hug not found"
-            }
+          "get": {
+              "tags": [
+                  "Hug"
+              ],
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "required": true,
+                      "type": "integer"
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Hug found",
+                      "schema": {
+                          "$ref": "#/definitions/Hug"
+                      }
+                  },
+                  "400": {
+                      "description": "Invalid ID supplied"
+                  },
+                  "404": {
+                      "description": "Hug not found"
+                  }
+              },
+              "summary": "Get a hug by ID"
+          },
+          "put": {
+              "tags": [
+                  "Hug"
+              ],
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "required": true,
+                      "type": "integer"
+                  },
+                  {
+                      "name": "hug",
+                      "schema": {
+                          "$ref": "#/definitions/HugInput"
+                      },
+                      "in": "body",
+                      "required": true
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Hug updated",
+                      "schema": {
+                          "$ref": "#/definitions/Hug"
+                      }
+                  },
+                  "400": {
+                      "description": "Missing required field 'name'"
+                  },
+                  "404": {
+                      "description": "Hug not found"
+                  }
+              },
+              "summary": "Update a hug by ID"
+          },
+          "delete": {
+              "tags": [
+                  "Hug"
+              ],
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "required": true,
+                      "type": "integer"
+                  }
+              ],
+              "responses": {
+                  "204": {
+                      "description": "Hug deleted"
+                  },
+                  "400": {
+                      "description": "Invalid ID supplied"
+                  },
+                  "404": {
+                      "description": "Hug not found"
+                  }
+              },
+              "summary": "Delete a hug by ID"
           }
-        },
-        "put": {
-          "summary": "Update a hug by ID",
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "required": true,
-              "type": "integer"
-            },
-            {
-              "in": "body",
-              "name": "hug",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/HugInput"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Hug updated",
-              "schema": {
-                "$ref": "#/definitions/Hug"
-              }
-            },
-            "400": {
-              "description": "Missing required field 'name'"
-            },
-            "404": {
-              "description": "Hug not found"
-            }
+      },
+      "/clients": {
+          "get": {
+              "tags": [
+                  "Client"
+              ],
+              "responses": {
+                  "200": {
+                      "description": "A list of clients",
+                      "schema": {
+                          "type": "array",
+                          "items": {
+                              "$ref": "#/definitions/Client"
+                          }
+                      }
+                  }
+              },
+              "summary": "Get all clients"
+          },
+          "post": {
+              "tags": [
+                  "Client"
+              ],
+              "parameters": [
+                  {
+                      "name": "client",
+                      "schema": {
+                          "$ref": "#/definitions/ClientInput"
+                      },
+                      "in": "body",
+                      "required": true
+                  }
+              ],
+              "responses": {
+                  "201": {
+                      "description": "Client created",
+                      "schema": {
+                          "$ref": "#/definitions/Client"
+                      }
+                  },
+                  "400": {
+                      "description": "Missing required field 'name'"
+                  }
+              },
+              "summary": "Create a new client"
           }
-        },
-        "delete": {
-          "summary": "Delete a hug by ID",
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "required": true,
-              "type": "integer"
-            }
-          ],
-          "responses": {
-            "204": {
-              "description": "Hug deleted"
-            },
-            "400": {
-              "description": "Invalid ID supplied"
-            },
-            "404": {
-              "description": "Hug not found"
-            }
+      },
+      "/clients/{id}": {
+          "get": {
+              "tags": [
+                  "Client"
+              ],
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "required": true,
+                      "type": "integer"
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Client found",
+                      "schema": {
+                          "$ref": "#/definitions/Client"
+                      }
+                  },
+                  "400": {
+                      "description": "Invalid ID supplied"
+                  },
+                  "404": {
+                      "description": "Client not found"
+                  }
+              },
+              "summary": "Get a client by ID"
+          },
+          "put": {
+              "tags": [
+                  "Client"
+              ],
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "required": true,
+                      "type": "integer"
+                  },
+                  {
+                      "name": "client",
+                      "schema": {
+                          "$ref": "#/definitions/ClientInput"
+                      },
+                      "in": "body",
+                      "required": true
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Client updated",
+                      "schema": {
+                          "$ref": "#/definitions/Client"
+                      }
+                  },
+                  "400": {
+                      "description": "Missing required field 'name'"
+                  },
+                  "404": {
+                      "description": "Client not found"
+                  }
+              },
+              "summary": "Update a client by ID"
+          },
+          "delete": {
+              "tags": [
+                  "Client"
+              ],
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "required": true,
+                      "type": "integer"
+                  }
+              ],
+              "responses": {
+                  "204": {
+                      "description": "Client deleted"
+                  },
+                  "400": {
+                      "description": "Invalid ID supplied"
+                  },
+                  "404": {
+                      "description": "Client not found"
+                  }
+              },
+              "summary": "Delete a client by ID"
           }
-        }
       }
-    },
-    "definitions": {
+  },
+  "swagger": "2.0",
+  "host": "localhost:3001",
+  "basePath": "/",
+  "schemes": [
+      "http"
+  ],
+  "definitions": {
       "Hug": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "name": {
-            "type": "string"
-          },
-          "price": {
-            "type": "number"
+          "type": "object",
+          "properties": {
+              "id": {
+                  "type": "integer"
+              },
+              "name": {
+                  "type": "string"
+              },
+              "price": {
+                  "type": "number"
+              }
           }
-        }
       },
       "HugInput": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
+          "type": "object",
+          "properties": {
+              "name": {
+                  "type": "string"
+              },
+              "price": {
+                  "type": "number"
+              }
           },
-          "price": {
-            "type": "number"
+          "required": [
+              "name"
+          ]
+      },
+      "Client": {
+          "type": "object",
+          "properties": {
+              "id": {
+                  "type": "integer"
+              },
+              "name": {
+                  "type": "string"
+              },
+              "email": {
+                  "type": "string"
+              }
           }
-        },
-        "required": ["name"]
+      },
+      "ClientInput": {
+          "type": "object",
+          "properties": {
+              "name": {
+                  "type": "string"
+              },
+              "email": {
+                  "type": "string"
+              }
+          },
+          "required": [
+              "name",
+              "email"
+          ]
       }
-    }
   }
-  
+}
