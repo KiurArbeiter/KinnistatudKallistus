@@ -15,6 +15,8 @@ const hugs = [
     {id: 3, name: "Long", price: 70.00}
 ]
 
+const {db, sync} = require("./db");
+
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc))
 
 app.get("/", (req, res) => {
@@ -74,20 +76,21 @@ app.post("/hugs", (req, res) => {
     }
     const newPrice = parseFloat(req.body.price);
     const newHug = {
-            id: createId(),
             name: req.body.name,
             price: isNaN(newPrice) ? null : newPrice
         }
-    hugs.push(newHug)
+    const createdHug = db.hugs.create(newHug);
     res.status(201)
-    .location(`${getBaseUrl(req)}/hugs/${newHug.id}`)
-    .send(newHug)
+    .location(`${getBaseUrl(req)}/hugs/${createdHug.id}`)
+    .send(createdHug)
 })
 
 
 
-app.listen(port, () => {
-    require("./db")
+app.listen(port, async () => {
+    if(process.env.SYNC === "true") {
+        await sync();
+    }
     console.log(`API up at : http:/localhost:${port}`)
 })
 

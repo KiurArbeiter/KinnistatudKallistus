@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize, DataTypes, Association } = require('sequelize');
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
     host: process.env.DB_HOST,
@@ -15,3 +15,15 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
         console.error('Unable to connect to the database:', error);
       }
 })();
+
+const db = {}
+db.Sequelize = Sequelize;vc
+db.sequelize = sequelize;
+db.hugs = require(".models/Hug")(sequelize, DataTypes);
+
+(async () => {
+  await sequelize.sync({alter : true});
+  console.log("All models were syncronized")
+})();
+
+module.exports = {db, sync};
