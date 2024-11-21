@@ -60,10 +60,6 @@ app.put("/hugs/:id", (req, res) => {
 });
 
 
-function createId() {
-    const maxIdHug = hugs.reduce((prev, current) => (prev.id > current.id) ? prev : current, 1)
-    return maxIdHug + 1;
-}
 
 function getBaseUrl(req) {
     return (req.connection && req.connection.encrypted ? 'https' : 'http') + `://${req.headers.host}`
@@ -88,9 +84,7 @@ app.post("/hugs", (req, res) => {
 
 
 app.listen(port, async () => {
-    if(process.env.SYNC === "true") {
-        await sync();
-    }
+    if(process.env.SYNC === "true") { await sync(); }
     console.log(`API up at : http:/localhost:${port}`)
 })
 

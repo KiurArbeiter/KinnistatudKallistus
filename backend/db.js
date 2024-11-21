@@ -21,8 +21,8 @@ db.Sequelize = Sequelize;vc
 db.sequelize = sequelize;
 db.hugs = require(".models/Hug")(sequelize, DataTypes);
 
-(async () => {
-  await sequelize.sync({alter : true});
+const sync = (async () => {
+  await sequelize.sync({force : true});
   console.log("All models were syncronized")
 })();
 

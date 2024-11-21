@@ -35,8 +35,21 @@
           }
         }
       }
-
+/*
+      const vue = Vue.createApp({
+        data() {
+          return {
+            hugs: []
+          }
+        },
+        async created() {
+          this.hugs = await (await fetch('http://localhost:3001/hugs')).json();
+        }
+      }).mount('#app')
+      jätan nii sest poolik ja ununeb ära misenne oli
+      */
       const vue = Vue.createApp(Counter).mount('#app')
+      
     </script>
   </body>
 </html>
