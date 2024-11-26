@@ -28,8 +28,8 @@ app.get("/", (req, res) => {
 })
 
 app.get("/hugs", (req, res) => {
-    res.send(hugs.map(({id,name}) => {
-         return {id, name}
+    res.send(hugs.map(({id,name,price}) => {
+         return {id, name,price}
     }))
 })
 app.get("/clients", (req, res) => {
