@@ -17,7 +17,7 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
 })();
 
 const db = {}
-db.Sequelize = Sequelize;vc
+db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 db.hugs = require(".models/Hug")(sequelize, DataTypes);
 
