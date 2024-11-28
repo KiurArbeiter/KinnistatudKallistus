@@ -3,11 +3,12 @@ const port = process.envPORT || 3001;
 const host = 'localhost'
 const express = require("express")
 const app = express()
+const cors = require('cors')
 const swaggerDoc = require("./docs/swagger.json")
 const swaggerUi = require("swagger-ui-express")
 
 
-
+app.use(cors())
 app.use(express.json())
 const hugs = [
     {id: 1, name: "Short", price: 20.50},
