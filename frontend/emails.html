@@ -95,6 +95,14 @@
           <button @click="cancelEdit" type="button" class="btn btn-secondary ms-2">Cancel</button>
         </form>
       </div>
+
+      <button
+        class="btn btn-success mt-3"
+        id="sendEmailsButton"
+        @click="sendEmailsToAllClients"
+      >
+        Send Emails to All Clients
+      </button>
     </div>
 
     <script
@@ -117,19 +125,29 @@
           await this.fetchClients();
         },
         methods: {
-          async sendEmails() {
+          async sendEmailsToAllClients() {
             try {
-              const response = await fetch('http://localhost:3001/sendEmails', {
-                method: 'POST',
+              const response = await fetch("http://localhost:3001/clients");
+              const clients = await response.json();
+              clients.forEach(client => {
+                Email.send({
+                    Host: "smtp.gmail.com",
+                    Username: "kinnistatudkallistus@gmail.com",
+                    Password: "KinnistatudKallistusPassword", // 2 Auth võti
+                    To: client.email,
+                    From: "kinnistatudkallistus@gmail.com",
+                    Subject: "Sinu elu loeb!",
+                    Body: "Sinu elu loeb! Sinu elu loeb! Sinu elu loeb! Sinu elu loeb! Sinu elu loeb! Sinu elu loeb! ",
+                })
+                .then(function (message) {
+                    console.log(`Mail sent to ${client.email}`);
+                })
+                .catch(function (error) {
+                    console.error(`Error sending email to ${client.email}`, error);
+                });
               });
-              if (response.ok) {
-                alert('Emails sent successfully');
-              } else {
-                throw new Error('Failed to send emails');
-              }
             } catch (error) {
-              console.error(error);
-              alert('Error sending emails');
+              console.error("Error fetching clients:", error);
             }
           },
 
@@ -204,10 +222,8 @@
                   }),
                 });
                 if (!response.ok) throw new Error('Failed to create client');
-
                 await this.fetchClients();
               }
-
               this.resetForm();
             } catch (error) {
               console.error(error);
@@ -243,5 +259,5 @@
 
       app.mount('#app');
     </script>
-  </body>
-</html>
+
+    <script type
