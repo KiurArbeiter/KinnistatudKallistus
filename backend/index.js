@@ -21,45 +21,6 @@ const clients = [
     {id: 3, name: "third", email: "3@gmail.3"}
 ]
 const {db, sync} = require("./db");
-
-// Create a Nodemailer transporter
-const transporter = nodemailer.createTransport({
-    service: 'gmail', // Or use another email service
-    auth: {
-      user: 'your_email@gmail.com', // Replace with your email
-      pass: 'your_email_password',  // Replace with your email password
-    },
-  });
-  
-  // Endpoint to send emails to all clients
-  app.post('/sendEmails', async (req, res) => {
-    const mailOptions = {
-      from: 'your_email@gmail.com',
-      subject: 'Important Update from KinnistatudKallistus',
-      text: 'This is an important update message for all clients.',
-    };
-  
-    let failedEmails = [];
-    for (const client of clients) {
-      try {
-        await transporter.sendMail({
-          ...mailOptions,
-          to: client.email, // Send email to each client
-          html: `<p>Dear ${client.name},</p><p>This is an important update message for you.</p>`, // You can customize this
-        });
-      } catch (error) {
-        console.error(`Failed to send email to ${client.email}`, error);
-        failedEmails.push(client.email);
-      }
-    }
-  
-    if (failedEmails.length === 0) {
-      res.status(200).send('Emails sent successfully');
-    } else {
-      res.status(500).send(`Failed to send email to: ${failedEmails.join(', ')}`);
-    }
-  });
-
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc))
 
 app.get("/", (req, res) => {
