@@ -14,105 +14,77 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">KinnistatudKallistus</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link active" href="addmail.html">Register</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="emails.html">Hug List</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="index.html">Admin</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    <div id="app" class="container mt-4">
-      <table id="gamesTable" class="table table-striped table-bordered">
-        <tr>
-          <th>Name</th>
-          <th>Price</th>
-        </tr>
-        <tr v-for="hug in hugs" :key="hug.id">
-          <td @click="getHug(hug.id)">{{ hug.name }}</td>
-          <td>{{ hug.price }}</td>
-        </tr>
-      </table>
-
-      <div id="hugInfoModal" class="modal" tabindex="-1">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Hug Information</h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <table class="table table-striped">
-                <tr>
-                  <th>ID</th>
-                  <td>{{ hugInModal.id }}</td>
-                </tr>
-                <tr>
-                  <th>Name</th>
-                  <td>{{ hugInModal.name }}</td>
-                </tr>
-                <tr>
-                  <th>Price</th>
-                  <td>{{ hugInModal.price }}</td>
-                </tr>
-              </table>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" @click="showEditForm(hugInModal)" class="btn btn-primary">Edit</button>
-            </div>
-          </div>
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">KinnistatudKallistus</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" href="addmail.html">Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="emails.html">Hug List</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Admin</a>
+            </li>
+          </ul>
         </div>
       </div>
+    </nav>
+
+    <div id="app" class="container mt-4">
+      <h3>Register to KinnistatudKallistus</h3>
+
+      <!-- Dropdown for selecting client email -->
+      <div class="mb-3">
+        <label for="clientSelect" class="form-label">Select Client Email</label>
+        <select id="clientSelect" class="form-control" v-model="selectedClientEmail">
+          <option v-for="client in clients" :value="client.email" :key="client.id">{{ client.email }}</option>
+        </select>
+      </div>
+
+      <!-- Dropdown for selecting hug -->
+      <div class="mb-3">
+        <label for="hugSelect" class="form-label">Select Hug</label>
+        <select id="hugSelect" class="form-control" v-model="selectedHugId">
+          <option v-for="hug in hugs" :value="hug.id" :key="hug.id">{{ hug.name }} - ${{ hug.price }}</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" @click="assignHugToClient">Assign Hug to Client</button>
 
       <div v-if="showForm" class="mt-4">
-        <h3>{{ editMode ? 'Edit Hug' : 'Add New Hug' }}</h3>
-        <form @submit.prevent="saveHug">
+        <h3>{{ editMode ? 'Edit Client' : 'Add New Client' }}</h3>
+        <form @submit.prevent="saveClient">
           <div class="mb-3">
-            <label for="hugName" class="form-label">Name</label>
+            <label for="clientName" class="form-label">Name</label>
             <input
               type="text"
               class="form-control"
-              id="hugName"
-              v-model="hugForm.name"
+              id="clientName"
+              v-model="clientForm.name"
               required
             />
           </div>
           <div class="mb-3">
-            <label for="hugPrice" class="form-label">Price</label>
+            <label for="clientEmail" class="form-label">Email</label>
             <input
-              type="number"
+              type="email"
               class="form-control"
-              id="hugPrice"
-              v-model="hugForm.price"
-              step="0.01"
+              id="clientEmail"
+              v-model="clientForm.email"
               required
             />
           </div>
           <button type="submit" class="btn btn-primary">
-            {{ editMode ? 'Update' : 'Create' }} Hug
+            {{ editMode ? 'Update' : 'Create' }} Client
           </button>
           <button @click="cancelEdit" type="button" class="btn btn-secondary ms-2">Cancel</button>
         </form>
       </div>
-
     </div>
 
     <script
@@ -123,42 +95,29 @@
       const app = Vue.createApp({
         data() {
           return {
-            hugInModal: { id: null, name: null, price: null },
+            clients: [],
             hugs: [],
-            hugForm: { name: '', price: null },
+            selectedClientEmail: '',
+            selectedHugId: null,
+            clientForm: { name: '', email: '' },
             showForm: false,
             editMode: false,
-            editingHugId: null,
+            editingClientId: null,
           };
         },
         async created() {
+          await this.fetchClients();
           await this.fetchHugs();
         },
         methods: {
-
-          async sendEmailsToAllClients() {
+          async fetchClients() {
             try {
-              const response = await fetch("http://localhost:3001/clients");
-              const clients = await response.json();
-              clients.forEach(client => {
-                Email.send({
-                    Host: "smtp.gmail.com",
-                    Username: "kinnistatudkallistus@gmail.com",
-                    Password: "KinnistatudKallistusPassword", // 2 Auth võti
-                    To: client.email,
-                    From: "kinnistatudkallistus@gmail.com",
-                    Subject: "Sinu elu loeb!",
-                    Body: "Sinu elu loeb! Sinu elu loeb! Sinu elu loeb! Sinu elu loeb! Sinu elu loeb! Sinu elu loeb! ",
-                })
-                .then(function (message) {
-                    console.log(`Mail sent to ${client.email}`);
-                })
-                .catch(function (error) {
-                    console.error(`Error sending email to ${client.email}`, error);
-                });
-              });
+              const response = await fetch('http://localhost:3001/clients');
+              if (!response.ok) throw new Error('Failed to fetch clients');
+              this.clients = await response.json();
             } catch (error) {
-              console.error("Error fetching clients:", error);
+              console.error(error);
+              alert('Error fetching clients');
             }
           },
 
@@ -173,99 +132,81 @@
             }
           },
 
-          async getHug(id) {
+          async assignHugToClient() {
+            if (!this.selectedClientEmail || !this.selectedHugId) {
+              alert('Please select both a client and a hug.');
+              return;
+            }
+
             try {
-              const response = await fetch(`http://localhost:3001/hugs/${id}`);
-              if (response.ok) {
-                this.hugInModal = await response.json();
-                const hugInfoModal = new bootstrap.Modal(document.getElementById('hugInfoModal'));
-                hugInfoModal.show();
-              } else {
-                alert('Failed to fetch hug data');
-              }
+              const response = await fetch('http://localhost:3001/assignHug', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  clientEmail: this.selectedClientEmail,
+                  hugId: this.selectedHugId,
+                }),
+              });
+
+              if (!response.ok) throw new Error('Failed to assign hug');
+              alert('Hug successfully assigned!');
             } catch (error) {
               console.error(error);
-              alert('Error fetching hug');
+              alert('Error assigning hug');
             }
           },
 
-          showCreateForm() {
-            this.resetForm();
-            this.showForm = true;
-            this.editMode = false;
-          },
-
-          showEditForm(hug) {
-            this.hugForm.name = hug.name;
-            this.hugForm.price = hug.price;
-            this.editingHugId = hug.id;
-            this.showForm = true;
-            this.editMode = true;
-          },
-
-          async saveHug() {
+          async saveClient() {
             try {
               let response;
               if (this.editMode) {
-                response = await fetch(`http://localhost:3001/hugs/${this.editingHugId}`, {
+                response = await fetch(`http://localhost:3001/clients/${this.editingClientId}`, {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
                   },
                   body: JSON.stringify({
-                    name: this.hugForm.name,
-                    price: parseFloat(this.hugForm.price),
+                    name: this.clientForm.name,
+                    email: this.clientForm.email,
                   }),
                 });
-                if (!response.ok) throw new Error('Failed to update hug');
-                const updatedHug = await response.json();
-                const index = this.hugs.findIndex((hug) => hug.id === updatedHug.id);
-                if (index !== -1) this.hugs[index] = updatedHug;
+                if (!response.ok) throw new Error('Failed to update client');
+                const updatedClient = await response.json();
+                const index = this.clients.findIndex((client) => client.id === updatedClient.id);
+                if (index !== -1) this.clients[index] = updatedClient;
               } else {
-                response = await fetch('http://localhost:3001/hugs', {
+                response = await fetch('http://localhost:3001/clients', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
                   },
                   body: JSON.stringify({
-                    name: this.hugForm.name,
-                    price: parseFloat(this.hugForm.price),
+                    name: this.clientForm.name,
+                    email: this.clientForm.email,
                   }),
                 });
-                if (!response.ok) throw new Error('Failed to create hug');
-
-                await this.fetchHugs();
+                if (!response.ok) throw new Error('Failed to create client');
+                await this.fetchClients();
               }
 
               this.resetForm();
             } catch (error) {
               console.error(error);
-              alert('Error saving hug');
+              alert('Error saving client');
             }
-          },
-
-          async deleteHug(id) {
-            try {
-              const response = await fetch(`http://localhost:3001/hugs/${id}`, {
-                method: 'DELETE',
-              });
-              if (!response.ok) throw new Error('Failed to delete hug');
-              this.hugs = this.hugs.filter((hug) => hug.id !== id);
-            } catch (error) {
-              console.error(error);
-              alert('Failed to delete hug');
-            }
-          },
-
-          resetForm() {
-            this.hugForm = { name: '', price: null };
-            this.editMode = false;
-            this.editingHugId = null;
-            this.showForm = false;
           },
 
           cancelEdit() {
             this.resetForm();
+          },
+
+          resetForm() {
+            this.clientForm = { name: '', email: '' };
+            this.editMode = false;
+            this.editingClientId = null;
+            this.showForm = false;
           },
         },
       });
