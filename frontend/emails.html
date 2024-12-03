@@ -26,7 +26,8 @@
         </tr>
         <tr v-for="client in clients" :key="client.id">
           <td @click="getClient(client.id)">{{ client.name }}</td>
-          <td>{{ client.email }}</td>
+          <td @click="getClient(client.email)">{{ client.email }}</td>
+          <td @click="getClient(client.email)">{{ client.email }}</td>
           <td>
             <button @click="deleteClient(client.id)" class="btn btn-danger btn-sm">Delete</button>
             <button @click="showEditForm(client)" class="btn btn-warning btn-sm">Edit</button>
