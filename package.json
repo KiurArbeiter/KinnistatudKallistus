@@ -1,0 +1,16 @@
+{
+    "name": "tarpe22-games",
+    "version": "1.0.0",
+    "description": "Hajusrakenduste aine käigus loodava veebirakenduse demo",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "dev": "vite",
+      "start": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "concurrently": "^9.0.1"
+    }
+  }
