@@ -14,39 +14,30 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">KinnistatudKallistus</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link active" href="addmail.html">Register</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="emails.html">Mail List</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="index.html">Megre?</a>
-            </li>
-          </ul>
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">KinnistatudKallistus</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" href="addmail.html">Register</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="emails.html">Mail List</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">Megre?</a>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
     <div id="app" class="container mt-4">
+      <button class="btn btn-primary mb-3" @click="showCreateForm">Register to KinnistatudKallistus</button>
 
-      <table id="gamesTable" class="table table-striped table-bordered">
-        <tr>
-          <th>Name</th>
-          <th>E-Mail</th>
-        </tr>
-        <tr v-for="client in clients" :key="client.id">
-          <td @click="getClient(client.id)">{{ client.name }}</td>
-          <td @click="getClient(client.email)">{{ client.email }}</td>
 
-        </tr>
-      </table>
 
       <div id="clientInfoModal" class="modal" tabindex="-1">
         <div class="modal-dialog">

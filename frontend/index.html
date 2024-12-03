@@ -13,6 +13,27 @@
     />
   </head>
   <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">KinnistatudKallistus</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" href="addmail.html">Register</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="emails.html">Mail List</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">Megre?</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
     <div id="app" class="container mt-4">
       <button class="btn btn-primary mb-3" @click="showCreateForm">Create New Hug</button>
 
@@ -98,6 +119,13 @@
           <button @click="cancelEdit" type="button" class="btn btn-secondary ms-2">Cancel</button>
         </form>
       </div>
+      <button
+      class="btn btn-success mt-3"
+      id="sendEmailsButton"
+      @click="sendEmailsToAllClients"
+    >
+      Send Emails to All Clients
+    </button>
     </div>
 
     <script
@@ -120,6 +148,33 @@
           await this.fetchHugs();
         },
         methods: {
+
+          async sendEmailsToAllClients() {
+            try {
+              const response = await fetch("http://localhost:3001/clients");
+              const clients = await response.json();
+              clients.forEach(client => {
+                Email.send({
+                    Host: "smtp.gmail.com",
+                    Username: "kinnistatudkallistus@gmail.com",
+                    Password: "KinnistatudKallistusPassword", // 2 Auth võti
+                    To: client.email,
+                    From: "kinnistatudkallistus@gmail.com",
+                    Subject: "Sinu elu loeb!",
+                    Body: "Sinu elu loeb! Sinu elu loeb! Sinu elu loeb! Sinu elu loeb! Sinu elu loeb! Sinu elu loeb! ",
+                })
+                .then(function (message) {
+                    console.log(`Mail sent to ${client.email}`);
+                })
+                .catch(function (error) {
+                    console.error(`Error sending email to ${client.email}`, error);
+                });
+              });
+            } catch (error) {
+              console.error("Error fetching clients:", error);
+            }
+          },
+          
           async fetchHugs() {
             try {
               const response = await fetch('http://localhost:3001/hugs');
