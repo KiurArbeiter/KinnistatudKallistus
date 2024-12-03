@@ -14,28 +14,26 @@
   </head>
   <body>
     <div id="app" class="container mt-4">
-      <!-- Create Button -->
       <button class="btn btn-primary mb-3" @click="showCreateForm">Register to KinnistatudKallistus</button>
+      <!-- Add this button below your table, for example -->
+<button @click="sendEmails" class="btn btn-success mt-4">
+  Send Email to All Clients
+</button>
 
-      <!-- Table -->
       <table id="gamesTable" class="table table-striped table-bordered">
         <tr>
           <th>Name</th>
           <th>E-Mail</th>
-          <th>Member Level</th>
         </tr>
         <tr v-for="client in clients" :key="client.id">
           <td @click="getClient(client.id)">{{ client.name }}</td>
           <td @click="getClient(client.email)">{{ client.email }}</td>
-          <td @click="getClient(client.email)">{{ client.email }}</td>
           <td>
             <button @click="deleteClient(client.id)" class="btn btn-danger btn-sm">Delete</button>
-            <button @click="showEditForm(client)" class="btn btn-warning btn-sm">Edit</button>
           </td>
         </tr>
       </table>
 
-      <!-- Client Info Modal -->
       <div id="clientInfoModal" class="modal" tabindex="-1">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -72,7 +70,6 @@
         </div>
       </div>
 
-      <!-- Add/Edit Client Form -->
       <div v-if="showForm" class="mt-4">
         <h3>{{ editMode ? 'Edit Client' : 'Add New Client' }}</h3>
         <form @submit.prevent="saveClient">
@@ -121,10 +118,25 @@
           };
         },
         async created() {
-          // Fetch clients when the app is created
           await this.fetchClients();
         },
         methods: {
+          async sendEmails() {
+            try {
+              const response = await fetch('http://localhost:3001/sendEmails', {
+                method: 'POST',
+              });
+              if (response.ok) {
+                alert('Emails sent successfully');
+              } else {
+                throw new Error('Failed to send emails');
+              }
+            } catch (error) {
+              console.error(error);
+              alert('Error sending emails');
+            }
+          },
+
           async fetchClients() {
             try {
               const response = await fetch('http://localhost:3001/clients');
@@ -170,7 +182,6 @@
             try {
               let response;
               if (this.editMode) {
-                // Update Client
                 response = await fetch(`http://localhost:3001/clients/${this.editingClientId}`, {
                   method: 'PUT',
                   headers: {
@@ -186,7 +197,6 @@
                 const index = this.clients.findIndex((client) => client.id === updatedClient.id);
                 if (index !== -1) this.clients[index] = updatedClient;
               } else {
-                // Create New Client
                 response = await fetch('http://localhost:3001/clients', {
                   method: 'POST',
                   headers: {
@@ -199,11 +209,9 @@
                 });
                 if (!response.ok) throw new Error('Failed to create client');
 
-                // Fetch updated clients after creation
                 await this.fetchClients();
               }
 
-              // Reset the form and hide it
               this.resetForm();
             } catch (error) {
               console.error(error);
