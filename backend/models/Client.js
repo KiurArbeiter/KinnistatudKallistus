@@ -12,6 +12,17 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+<<<<<<< Updated upstream
+=======
+            email: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            hugtype: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            }
+>>>>>>> Stashed changes
         },
         {
             // Other model options go here

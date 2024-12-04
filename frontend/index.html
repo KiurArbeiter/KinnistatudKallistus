@@ -22,75 +22,6 @@
 <<<<<<< Updated upstream
 =======
 
-      <!-- Hug Info Modal -->
-      <div id="hugInfoModal" class="modal" tabindex="-1">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Hug Information</h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <table class="table table-striped">
-                <tr>
-                  <th>ID</th>
-                  <td>{{ hugInModal.id }}</td>
-                </tr>
-                <tr>
-                  <th>Name</th>
-                  <td>{{ hugInModal.name }}</td>
-                </tr>
-                <tr>
-                  <th>Price</th>
-                  <td>{{ hugInModal.price }}</td>
-                </tr>
-              </table>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" @click="showEditHugForm(hugInModal)" class="btn btn-primary">Edit</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Hug Form -->
-      <div v-if="showHugForm" class="mt-4">
-        <h3>{{ editMode ? 'Edit Hug' : 'Add New Hug' }}</h3>
-        <form @submit.prevent="saveHug">
-          <div class="mb-3">
-            <label for="hugName" class="form-label">Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="hugName"
-              v-model="hugForm.name"
-              required
-            />
-          </div>
-          <div class="mb-3">
-            <label for="hugPrice" class="form-label">Price</label>
-            <input
-              type="number"
-              class="form-control"
-              id="hugPrice"
-              v-model="hugForm.price"
-              step="0.01"
-              required
-            />
-          </div>
-          <button type="submit" class="btn btn-primary">
-            {{ editMode ? 'Update' : 'Create' }} Hug
-          </button>
-          <button @click="cancelEdit" type="button" class="btn btn-secondary ms-2">Cancel</button>
-        </form>
-      </div>
-
       <!-- Client Section -->
       <button class="btn btn-primary mb-3 mt-4" @click="showCreateClientForm">Register to KinnistatudKallistus</button>
 
@@ -98,13 +29,23 @@
         <tr>
           <th>Name</th>
           <th>Email</th>
+<<<<<<< Updated upstream
           <th>Order</th>
+=======
+          <th>Assigned Hug</th> <!-- New column for assigned hug -->
+>>>>>>> Stashed changes
           <th>Actions</th>
         </tr>
         <tr v-for="client in clients" :key="client.id">
           <td @click="getClient(client.id)">{{ client.name }}</td>
+<<<<<<< Updated upstream
           <td>{{ client.email }}</td>
           <td>{{ clientInModal.hugName }}</td>
+=======
+          <td @click="getClient(client.email)">{{ client.email }}</td>
+          <td @click="getClient(client.id)">{{ client.assignedHug ? client.assignedHug.hugtype : 'None' }}</td>
+
+>>>>>>> Stashed changes
           <td>
             <button @click="deleteClient(client.id)" class="btn btn-danger btn-sm">Delete</button>
           </td>
@@ -188,6 +129,7 @@
       const Counter = {
         data() {
           return {
+<<<<<<< Updated upstream
             hugs: [
               {id:1, name: 'Short', price: 15.44 },
               {id:2, name: 'Medium', price: 105.44 },
@@ -196,6 +138,130 @@
           }
         }
       }
+=======
+            hugInModal: { id: null, name: null, price: null },
+            clientInModal: { id: null, name: null, email: null },
+            hugs: [],
+            clients: [],
+            hugForm: { name: '', price: null },
+            clientForm: { name: '', email: '' },
+            showHugForm: false,
+            showClientForm: false,
+            editMode: false,
+            editingHugId: null,
+            editingClientId: null,
+          };
+        },
+        async created() {
+          await this.fetchHugs();
+          await this.fetchClients();
+        },
+        methods: {
+          async fetchHugs() {
+            try {
+              const response = await fetch('http://localhost:3001/hugs');
+              if (!response.ok) throw new Error('Failed to fetch hugs');
+              this.hugs = await response.json();
+            } catch (error) {
+              console.error(error);
+              alert('Error fetching hugs');
+            }
+          },
+          async fetchClients() {
+            try {
+              const response = await fetch('http://localhost:3001/clients');
+              if (!response.ok) throw new Error('Failed to fetch clients');
+              this.clients = await response.json();
+            } catch (error) {
+              console.error(error);
+              alert('Error fetching clients');
+            }
+          },
+          async assignHugToClient(clientId, hugId) {
+            try {
+              const response = await fetch(`http://localhost:3001/clients/${clientId}/assignHug`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ hugId }),
+              });
+              if (!response.ok) throw new Error('Failed to assign hug');
+              await this.fetchClients(); // Refresh client data
+            } catch (error) {
+              console.error(error);
+              alert('Error assigning hug to client');
+            }
+          },
+          async showCreateClientForm() {
+            this.showClientForm = true;
+            this.editMode = false;
+            this.clientForm = { name: '', email: '' };
+          },
+          async showEditClientForm(client) {
+            this.editMode = true;
+            this.clientForm = { ...client };
+            this.showClientForm = true;
+          },
+          async saveClient() {
+            try {
+              if (this.editMode) {
+                await this.updateClient();
+              } else {
+                await this.createClient();
+              }
+            } catch (error) {
+              console.error(error);
+            }
+          },
+          async createClient() {
+            const response = await fetch('http://localhost:3001/clients', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(this.clientForm),
+            });
+            const newClient = await response.json();
+            this.clients.push(newClient);
+            this.showClientForm = false;
+          },
+          async updateClient() {
+            const response = await fetch(`http://localhost:3001/clients/${this.clientForm.id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(this.clientForm),
+            });
+            const updatedClient = await response.json();
+            const index = this.clients.findIndex(c => c.id === updatedClient.id);
+            this.clients.splice(index, 1, updatedClient);
+            this.showClientForm = false;
+          },
+          async deleteClient(clientId) {
+            try {
+              await fetch(`http://localhost:3001/clients/${clientId}`, {
+                method: 'DELETE',
+              });
+              this.clients = this.clients.filter(client => client.id !== clientId);
+            } catch (error) {
+              console.error(error);
+            }
+          },
+          showCreateHugForm() {
+            this.showHugForm = true;
+            this.hugForm = { name: '', price: '' };
+          },
+          async deleteHug(hugId) {
+            try {
+              await fetch(`http://localhost:3001/hugs/${hugId}`, {
+                method: 'DELETE',
+              });
+              this.hugs = this.hugs.filter(hug => hug.id !== hugId);
+            } catch (error) {
+              console.error(error);
+            }
+          },
+        },
+      });
+>>>>>>> Stashed changes
 
       const vue = Vue.createApp(Counter).mount('#app')
     </script>
