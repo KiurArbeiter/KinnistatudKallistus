@@ -135,6 +135,7 @@
         <tr v-for="client in clients" :key="client.id">
           <td @click="getClient(client.id)">{{ client.name }}</td>
           <td @click="getClient(client.email)">{{ client.email }}</td>
+          <td @click="getClient(client.email)">{{ client.hugtype }}</td>
           <td>
             <button @click="deleteClient(client.id)" class="btn btn-danger btn-sm">Delete</button>
           </td>
@@ -202,6 +203,16 @@
               required
             />
           </div>
+          <div class="mb-3">
+            <label for="clientHugType" class="form-label">Assigned Hug</label>
+            <input
+              type="text"
+              class="form-control"
+              id="clientHugType"
+              v-model="clientForm.hugtype"
+              required
+            />
+          </div>
           <button type="submit" class="btn btn-primary">
             {{ editMode ? 'Update' : 'Create' }} Client
           </button>
@@ -218,11 +229,11 @@
         data() {
           return {
             hugInModal: { id: null, name: null, price: null },
-            clientInModal: { id: null, name: null, email: null },
+            clientInModal: { id: null, name: null, email: null, hugtype: null },
             hugs: [],
             clients: [],
             hugForm: { name: '', price: null },
-            clientForm: { name: '', email: '' },
+            clientForm: { name: '', email: '', hugtype: ''},
             showHugForm: false,
             showClientForm: false,
             editMode: false,
@@ -337,7 +348,7 @@
           async showCreateClientForm() {
             this.showClientForm = true;
             this.editMode = false;
-            this.clientForm = { name: '', email: '' };
+            this.clientForm = { name: '', email: '', hugtype: '' };
           },
           async saveClient() {
             if (this.editMode) {

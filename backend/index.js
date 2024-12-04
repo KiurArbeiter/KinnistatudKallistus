@@ -16,9 +16,9 @@ const hugs = [
     {id: 3, name: "Long", price: 70.00}
 ]
 const clients = [
-    {id: 1, name: "first", email: "1@gmail.1"},
-    {id: 2, name: "second", email: "2@gmail.2"},
-    {id: 3, name: "third", email: "3@gmail.3"}
+    {id: 1, name: "first", email: "1@gmail.1", hugtype: "Short"},
+    {id: 2, name: "second", email: "2@gmail.2", hugtype: "Medium"},
+    {id: 3, name: "third", email: "3@gmail.3", hugtype: "long"}
 ]
 const {db, sync} = require("./db");
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc))
@@ -33,8 +33,8 @@ app.get("/hugs", (req, res) => {
     }))
 })
 app.get("/clients", (req, res) => {
-    res.send(clients.map(({id,name,email}) => {
-         return {id, name,email}
+    res.send(clients.map(({id,name,email, hugtype}) => {
+         return {id, name,email, hugtype}
     }))
 })
 
@@ -87,6 +87,7 @@ app.put("/clients/:id", (req, res) => {
     }
     client.name = req.body.name;
     client.email = req.body.email;
+    client.hugtype = req.body.hugtype;
     
     res.send(client);
 });
@@ -127,6 +128,7 @@ app.post("/clients", (req, res) => {
             id: createIdC(),
             name: req.body.name,
             email: req.body.email,
+            hugtype: req.body.hugtype,
 
         }
     )
