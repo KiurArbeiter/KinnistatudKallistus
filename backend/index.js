@@ -16,9 +16,9 @@ const hugs = [
     {id: 3, name: "Long", price: 70.00}
 ]
 const clients = [
-    {id: 1, name: "first", email: "1@gmail.1", hugtype: "Short"},
-    {id: 2, name: "second", email: "2@gmail.2", hugtype: "Medium"},
-    {id: 3, name: "third", email: "3@gmail.3", hugtype: "long"}
+    {id: 1, name: "first", email: "1@gmail.1", hugtype: "None"},
+    {id: 2, name: "second", email: "2@gmail.2", hugtype: "None"},
+    {id: 3, name: "third", email: "3@gmail.3", hugtype: "None"}
 ]
 const {db, sync} = require("./db");
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc))

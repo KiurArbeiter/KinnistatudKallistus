@@ -55,36 +55,6 @@
       </div>
 
       <button class="btn btn-primary" @click="assignHugToClient">Assign Hug to Client</button>
-
-      <div v-if="showForm" class="mt-4">
-        <h3>{{ editMode ? 'Edit Client' : 'Add New Client' }}</h3>
-        <form @submit.prevent="saveClient">
-          <div class="mb-3">
-            <label for="clientName" class="form-label">Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="clientName"
-              v-model="clientForm.name"
-              required
-            />
-          </div>
-          <div class="mb-3">
-            <label for="clientEmail" class="form-label">Email</label>
-            <input
-              type="email"
-              class="form-control"
-              id="clientEmail"
-              v-model="clientForm.email"
-              required
-            />
-          </div>
-          <button type="submit" class="btn btn-primary">
-            {{ editMode ? 'Update' : 'Create' }} Client
-          </button>
-          <button @click="cancelEdit" type="button" class="btn btn-secondary ms-2">Cancel</button>
-        </form>
-      </div>
     </div>
 
     <script
@@ -99,10 +69,6 @@
             hugs: [],
             selectedClientEmail: '',
             selectedHugId: null,
-            clientForm: { name: '', email: '' },
-            showForm: false,
-            editMode: false,
-            editingClientId: null,
           };
         },
         async created() {
@@ -138,75 +104,34 @@
               return;
             }
 
+            const client = this.clients.find((c) => c.email === this.selectedClientEmail);
+            const hug = this.hugs.find((h) => h.id === this.selectedHugId);
+
+            if (!client || !hug) {
+              alert('Invalid selection.');
+              return;
+            }
+
             try {
-              const response = await fetch('http://localhost:3001/assignHug', {
-                method: 'POST',
+              const response = await fetch(`http://localhost:3001/clients/${client.id}`, {
+                method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                  clientEmail: this.selectedClientEmail,
-                  hugId: this.selectedHugId,
+                  name: client.name,
+                  email: client.email,
+                  hugtype: hug.name, // Assign the selected hug's name as the hugtype
                 }),
               });
 
-              if (!response.ok) throw new Error('Failed to assign hug');
-              alert('Hug successfully assigned!');
+              if (!response.ok) throw new Error('Failed to update client');
+              alert(`Hug "${hug.name}" assigned to client "${client.name}".`);
+              await this.fetchClients(); // Refresh clients data
             } catch (error) {
               console.error(error);
-              alert('Error assigning hug');
+              alert('Error assigning hug to client.');
             }
-          },
-
-          async saveClient() {
-            try {
-              let response;
-              if (this.editMode) {
-                response = await fetch(`http://localhost:3001/clients/${this.editingClientId}`, {
-                  method: 'PUT',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    name: this.clientForm.name,
-                    email: this.clientForm.email,
-                  }),
-                });
-                if (!response.ok) throw new Error('Failed to update client');
-                const updatedClient = await response.json();
-                const index = this.clients.findIndex((client) => client.id === updatedClient.id);
-                if (index !== -1) this.clients[index] = updatedClient;
-              } else {
-                response = await fetch('http://localhost:3001/clients', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    name: this.clientForm.name,
-                    email: this.clientForm.email,
-                  }),
-                });
-                if (!response.ok) throw new Error('Failed to create client');
-                await this.fetchClients();
-              }
-
-              this.resetForm();
-            } catch (error) {
-              console.error(error);
-              alert('Error saving client');
-            }
-          },
-
-          cancelEdit() {
-            this.resetForm();
-          },
-
-          resetForm() {
-            this.clientForm = { name: '', email: '' };
-            this.editMode = false;
-            this.editingClientId = null;
-            this.showForm = false;
           },
         },
       });
